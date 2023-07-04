@@ -36,23 +36,23 @@ t_min = -5*largeur
 t_max = 5*largeur
 time = np.linspace(t_min, t_max, N)
 
-d_min = t_min*v
-d_max = t_max*v
+d_min = (t_min*c)*3/1000
+d_max = (t_max*c)*3/1000
 distances = np.linspace(d_min, d_max, N)
+print(d_min)
 
 
 #-------------------------------------------MONOCHROMATIQUE 1 SEULE FREQUENCE----------------------------------------------------------------------
 
-HeNe_laser = electric_field_monochromatic(E_0=1, k=2*np.pi/wavelength_0, z=0, w=w_0, t=time, position_delay=(2*v*w_0*time/c))
+HeNe_laser = electric_field_monochromatic(E_0=1, k=2*np.pi/wavelength_0, z=0, w=w_0, t=time, position_delay=(2*(0.0762 - (0.0762+distances))*2*np.pi/wavelength_0))
 HeNe_intensity = (np.conjugate(HeNe_laser)*HeNe_laser)/2
 
-HeNe_intensity_max = np.max(HeNe_intensity)
-
 HeNe_spectrum = fft(HeNe_intensity)
-freq_axis = fftfreq(len(time), 1 / N)
 
 
+"""
 #----------------------------------------------------MONOCHROMATIQUE MULTI SEULE FREQUENCE-----------------------------------------------------------
+freq_axis = fftfreq(len(time), 1 / N)
 
 
 
@@ -64,23 +64,25 @@ plt.plot(time, HeNe_intensity_w)
 plt.show()
 
 
+"""
 #------------------------------------------DIODE 1 SEULE FREQUENCE-----------------------------------------------------------
 
 t_min = -5*largeur
 t_max = 5*largeur
 time = np.linspace(t_min, t_max, N)
 
-d_min = t_min*v
-d_max = t_max*v
-distances = np.linspace(d_min, d_max, N)
+d_min = (t_min*v)*3
+d_max = (t_max*v)*3
+distancess = np.linspace(d_min, d_max, N)
+print(d_max)
 
-diode_laser = electric_field_pulsed(largeur=largeur, t=time, z=0, k=2*np.pi/wavelength_0, w=w_0, position_delay=(2*v*w_0*time/c))
+diode_laser = electric_field_pulsed(largeur=largeur, t=time, z=0, k=2*np.pi/wavelength_0, w=w_0, position_delay=(2*(0.0762 - (0.0762+distancess))*2*np.pi/wavelength_0))
 
 diode_intensity = (np.conjugate(diode_laser)*diode_laser)/2
 
-diode_spectrum = fft(diode_intensity)
-freq_axis = fftfreq(len(time), 1 / N)
+diode_spectrum = np.abs(fft(diode_intensity))
 
+"""
 #-----------------------------------------DIODE MULTI SEULE FREQUENCE-------------------------------------------------------
 
 
@@ -91,24 +93,26 @@ diode_intensity_w = (np.conjugate(diode_laser_w)*diode_laser_w)/2
 plt.figure()
 plt.plot(time, diode_intensity_w)
 plt.show()
+"""
 
 
 
 fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+freq_axis = fftfreq(len(time), 1 / N)
 
-axs[0,0].plot(distances, HeNe_intensity/HeNe_intensity_max)
-axs[0,0].set_xlabel('time')
+axs[0,0].plot(distances, HeNe_intensity)
+axs[0,0].set_xlabel('distance')
 axs[0,0].set_ylabel('intensity')
 
 axs[0,1].plot(freq_axis, np.abs(HeNe_spectrum))
 axs[0,1].set_xlabel('Frequency')
 axs[0,1].set_ylabel('Power Spectrum')
 
-axs[1,0].plot(time, diode_intensity)
-axs[1,0].set_xlabel('time')
+axs[1,0].plot(distancess, diode_intensity)
+axs[1,0].set_xlabel('distance')
 axs[1,0].set_ylabel('intensity')
 
-axs[1,1].plot(time, diode_spectrum)
+axs[1,1].plot(freq_axis, diode_spectrum)
 axs[1,1].set_xlabel('Frequency')
 axs[1,1].set_ylabel('Power Spectrum')
 
