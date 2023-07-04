@@ -36,8 +36,8 @@ t_min = -5*largeur
 t_max = 5*largeur
 time = np.linspace(t_min, t_max, N)
 
-d_min = (t_min*c)*3/1000
-d_max = (t_max*c)*3/1000
+d_min = (t_min*v)*3#/1000
+d_max = (t_max*v)*3#/1000
 distances = np.linspace(d_min, d_max, N)
 print(d_min)
 
@@ -117,6 +117,7 @@ axs[1,1].set_xlabel('Frequency')
 axs[1,1].set_ylabel('Power Spectrum')
 
 plt.tight_layout()
+plt.savefig('intensity_et_spectrum.png')
 plt.show()
 
 #-------------------------------------------MONOCHROMATIQUE 1 SEULE FREQUENCE----------------------------------------------------------------------
@@ -161,4 +162,5 @@ axs[1,1].set_xlabel('distance')
 axs[1,1].set_ylabel('visibility')
 
 plt.tight_layout()
+plt.savefig('g_1_et_visibility.png')
 plt.show()
