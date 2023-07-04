@@ -118,3 +118,47 @@ axs[1,1].set_ylabel('Power Spectrum')
 
 plt.tight_layout()
 plt.show()
+
+#-------------------------------------------MONOCHROMATIQUE 1 SEULE FREQUENCE----------------------------------------------------------------------
+
+HeNe_laser_0 = electric_field_monochromatic(E_0=1, k=2*np.pi/wavelength_0, z=0, w=w_0, t=time, position_delay=0)
+HeNe_I1 = np.conjugate(HeNe_laser_0)*HeNe_laser_0
+HeNe_I2 = (np.conjugate(HeNe_laser)*HeNe_laser)
+
+HeNe_g_1 = (np.conjugate(HeNe_laser_0)*HeNe_laser)/(HeNe_laser_0*HeNe_laser_0)
+
+HeNe_vis = ((2*np.sqrt(HeNe_I1)*np.sqrt(HeNe_I2))/(HeNe_I1+HeNe_I2))*(HeNe_g_1)
+
+
+#------------------------------------------DIODE 1 SEULE FREQUENCE-----------------------------------------------------------
+
+diode_laser_0 = electric_field_pulsed(largeur=largeur, t=time, z=0, k=2*np.pi/wavelength_0, w=w_0, position_delay=0)
+diode_I1 = np.conjugate(diode_laser_0)*diode_laser_0
+diode_I2 = np.conjugate(diode_laser)*diode_laser
+
+diode_g_1 = (np.conjugate(diode_laser_0)*diode_laser)/(diode_laser_0*diode_laser_0)
+
+diode_vis = ((2*np.sqrt(diode_I1)*np.sqrt(diode_I2))/(diode_I1+diode_I2))*(diode_g_1)
+
+
+
+fig, axs = plt.subplots(2, 2, figsize=(12, 8))
+
+axs[0,0].plot(time, HeNe_g_1)
+axs[0,0].set_xlabel('distance')
+axs[0,0].set_ylabel('g_1')
+
+axs[0,1].plot(distances, HeNe_vis)
+axs[0,1].set_xlabel('distance')
+axs[0,1].set_ylabel('visibility')
+
+axs[1,0].plot(time, diode_g_1)
+axs[1,0].set_xlabel('distance')
+axs[1,0].set_ylabel('g_1')
+
+axs[1,1].plot(distancess, diode_vis)
+axs[1,1].set_xlabel('distance')
+axs[1,1].set_ylabel('visibility')
+
+plt.tight_layout()
+plt.show()
