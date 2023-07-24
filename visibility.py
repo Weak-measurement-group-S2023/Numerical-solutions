@@ -57,7 +57,8 @@ HeNe_intensity = (np.conjugate(HeNe_laser)*HeNe_laser)/2
 
 HeNe_intensity_max = np.max(HeNe_intensity)
 
-HeNe_spectrum = fft(HeNe_intensity)
+# Perform FFT to find the spectrum
+HeNe_spectrum = np.fft.fftshift(np.fft.fft(HeNe_intensity))
 
 #------------------------------------------DIODE 1 SEULE FREQUENCE-----------------------------------------------------------
 
@@ -65,7 +66,14 @@ l1 = 0.07
 diode_intensity = int_pulse_1D(largeur=largeur, t=0, z=0, k=2*np.pi/wavelength_0, position_delay=(distances))
 
 Z = diode_intensity
-diode_spectrum = fft(diode_intensity)
+# Calculate the time step from the time array
+dt = time[1] - time[0]
+
+# Perform FFT to find the spectrum
+diode_spectrum = np.fft.fftshift(np.fft.fft(Z))
+
+# Frequency axis in radians per second
+omega = 2 * np.pi * np.fft.fftshift(np.fft.fftfreq(len(time), dt))
 
 n = np.arange(N)
 sr=2000
@@ -87,7 +95,7 @@ axs[1,0].plot(l1-distances, Z)
 axs[1,0].set_xlabel('distance')
 axs[1,0].set_ylabel('intensity')
 
-axs[1,1].plot(freq_axis, np.abs(diode_spectrum))
+axs[1,1].plot(omega, np.abs(diode_spectrum))
 axs[1,1].set_xlabel('Frequency')
 axs[1,1].set_ylabel('Power Spectrum')
 
