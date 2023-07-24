@@ -12,21 +12,7 @@ def electric_field_monochromatic(E_0, k, z, t, position_delay):
 
 def intensity_mono(E_0, k, position_delay):
     return ((E_0**2)*(np.cos(position_delay*k) + 1))/2
-"""
-def intensity_pulsed(largeur, t, z, k, position_delay):
-    w_0 = k*c
-    tau = np.empty(len(position_delay))
-    l1 = 0.07
-    #E_t = np.array((len(t), len(position_delay)))
-    I = np.empty((len(t), len(position_delay)))
-    for i in range(len(t)):
-        for j in range(len(position_delay)):
-            tau[j] = 2*(l1 - position_delay[j])/c
-            E_0 = np.sqrt(1/(np.sqrt(2*np.pi)*largeur))*np.exp(-np.square(((t[i]+tau[j])-(z)/c)/(2*largeur)))
-            E_t = (E_0/np.sqrt(2))*(np.exp(1j*(k*(z) -w_0*t[i])) + np.exp(1j*(k*z - w_0*(t[i]+tau[j]))))
-            I[i][j] = np.conjugate(E_t)*E_t
-    return I
-"""
+
 
 def int_pulse_1D(largeur, t, z, k, position_delay):
     w_0 = k*c
@@ -41,6 +27,11 @@ def int_pulse_1D(largeur, t, z, k, position_delay):
         I[j] = np.conjugate(E_t)*E_t
     return I
 
+def g_1_mono(w_0, tau):
+    return np.cos(w_0*tau)
+
+def g_1_pulse(w_0, tau, largeur):
+    return np.exp(-np.square(tau/(np.sqrt(8)*largeur)))*g_1_mono(w_0, tau)
 
 preselected_angle = np.pi/3
 phi_x = 0
@@ -67,46 +58,14 @@ HeNe_intensity = (np.conjugate(HeNe_laser)*HeNe_laser)/2
 HeNe_intensity_max = np.max(HeNe_intensity)
 
 HeNe_spectrum = fft(HeNe_intensity)
-#freq_axis = fftfreq(len(time), 1 / N)
-
-
-#----------------------------------------------------MONOCHROMATIQUE MULTI SEULE FREQUENCE-----------------------------------------------------------
-
-
-"""
-HeNe_laser_w = electric_field_monochromatic(E_0=1, k=(2*np.pi)/wavelength, z=0, w=w, t=time, position_delay=(2*v*w*time/c))
-HeNe_intensity_w = (np.conjugate(HeNe_laser_w)*HeNe_laser_w)/2
-
-plt.figure()
-plt.plot(time, HeNe_intensity_w)
-plt.show()
-
-"""
 
 #------------------------------------------DIODE 1 SEULE FREQUENCE-----------------------------------------------------------
-
-
-
-#diode_intensity = intensity_pulsed(largeur=largeur, t=time, z=0, k=2*np.pi/wavelength_0, position_delay=(distances))
 
 l1 = 0.07
 diode_intensity = int_pulse_1D(largeur=largeur, t=0, z=0, k=2*np.pi/wavelength_0, position_delay=(distances))
 
 Z = diode_intensity
 diode_spectrum = fft(diode_intensity)
-
-#-----------------------------------------DIODE MULTI SEULE FREQUENCE-------------------------------------------------------
-
-"""
-diode_laser_w = electric_field_pulsed(largeur=largeur, t=time, z=0, k=2*np.pi/wavelength, w=w, position_delay=(2*v*w*time/c))
-
-diode_intensity_w = (np.conjugate(diode_laser_w)*diode_laser_w)/2
-
-plt.figure()
-plt.plot(time, diode_intensity_w)
-plt.show()
-
-"""
 
 n = np.arange(N)
 sr=2000
@@ -146,8 +105,6 @@ HeNe_laser_0 = electric_field_monochromatic(E_0=1, k=2*np.pi/wavelength_0, z=0, 
 HeNe_I1 = np.conjugate(HeNe_laser_0)*HeNe_laser_0
 HeNe_I2 = (np.conjugate(HeNe_laser)*HeNe_laser)
 
-def g_1_mono(w_0, tau):
-    return np.cos(w_0*tau)
 
 HeNe_g_1 = g_1_mono(w_0, tau)
 HeNe_g_1 = np.sqrt(np.conjugate(HeNe_g_1)*HeNe_g_1)
@@ -160,13 +117,10 @@ tau_0 = np.linspace(0, 0, N)
 diode_laser_0 = int_pulse_1D(largeur, 0, 0, 2*np.pi/wavelength_0, tau_0)
 diode_I1 = np.conjugate(diode_laser_0)*diode_laser_0
 diode_I2 = diode_intensity
-def g_1_pulse(w_0, tau, largeur):
-    return np.exp(-np.square(tau/(np.sqrt(8)*largeur)))*g_1_mono(w_0, tau)
 
 diode_g_1 = g_1_pulse(w_0, tau, largeur)
 diode_g_1 = np.sqrt(np.conjugate(diode_g_1)*diode_g_1)
 diode_vis = ((2*np.sqrt(diode_I1)*np.sqrt(diode_I2))/(diode_I1+diode_I2))*(diode_g_1)
-
 
 
 fig, axs = plt.subplots(2, 2, figsize=(12, 8))
