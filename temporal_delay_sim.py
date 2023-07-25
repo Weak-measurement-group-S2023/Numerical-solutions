@@ -28,7 +28,7 @@ distances = np.linspace(d_min, d_max, N)
 time = np.linspace(d_min/c, d_max/c, N)
 
 l1 = 0.1
-l2 = 0.3
+l2 = 0.2
 path_diff = l1 - l2
 tau = path_diff/c
 
@@ -38,10 +38,10 @@ E_2 = pointeur(largeur, time, tau, wavelength_0)*(1/4)
 E_weak = (1/np.sqrt(2))*(E_1+E_2)
 E_ref = E_ref*(1/2)
 
-I_ref = np.conjugate(E_ref)*E_ref*(1/2)
+I_ref = np.conjugate(E_ref)*E_ref
 I_1 = (np.conjugate(E_1)*E_1)
 I_2 = (np.conjugate(E_2)*E_2)
-I_weak = np.conjugate(E_weak)*E_weak*(1/2)
+I_weak = np.conjugate(E_weak)*E_weak
 
 plt.plot(time, I_ref, label='ref')
 plt.plot(time, I_weak, label='weak')
