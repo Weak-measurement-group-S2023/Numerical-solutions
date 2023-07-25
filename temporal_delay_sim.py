@@ -28,7 +28,7 @@ distances = np.linspace(d_min, d_max, N)
 time = np.linspace(d_min/c, d_max/c, N)
 
 l1 = 0.1
-l2 = 0.2
+l2 = 10
 path_diff = l1 - l2
 tau = path_diff/c
 
