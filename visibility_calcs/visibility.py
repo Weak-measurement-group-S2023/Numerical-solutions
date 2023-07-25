@@ -63,7 +63,9 @@ HeNe_spectrum = np.fft.fftshift(np.fft.fft(HeNe_intensity))
 #------------------------------------------DIODE 1 SEULE FREQUENCE-----------------------------------------------------------
 
 l1 = 0.07
+tau_0 = np.linspace(0, 0, N)
 diode_intensity = int_pulse_1D(largeur=largeur, t=0, z=0, k=2*np.pi/wavelength_0, position_delay=(distances))
+diode_intensity_0 = int_pulse_1D(largeur=largeur, t=0, z=0, k=2*np.pi/wavelength_0, position_delay=tau_0)
 
 Z = diode_intensity
 # Calculate the time step from the time array
@@ -92,6 +94,7 @@ axs[0,1].set_xlabel('Frequency')
 axs[0,1].set_ylabel('Power Spectrum')
 
 axs[1,0].plot(l1-distances, Z)
+axs[1,0].plot(l1-distances, diode_intensity_0)
 axs[1,0].set_xlabel('distance')
 axs[1,0].set_ylabel('intensity')
 
